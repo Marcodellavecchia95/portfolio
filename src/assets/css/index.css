@@ -1,11 +1,14 @@
 /* Reset base */
 
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap");
+
 body,
 html {
   margin: 0;
   padding: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  /* font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif; */
+  font-family: "Inter", system-ui, sans-serif;
   scroll-behavior: smooth;
 }
 
@@ -16,6 +19,10 @@ a {
 
 a:hover {
   text-decoration: underline;
+}
+
+section {
+  scroll-margin-top: 110px;
 }
 
 .navbar {
@@ -45,11 +52,13 @@ a:hover {
   margin-bottom: 1rem;
 }
 
-.light .nav-logo {
+.light .nav-logo,
+.nav-links {
   color: #111;
 }
 
-.dark .nav-logo {
+.dark .nav-logo,
+.nav-links {
   color: #fff;
 }
 
@@ -85,7 +94,7 @@ a:hover {
 
 /* Container */
 .container {
-  padding-top: 70px; /* space for fixed navbar */
+  padding-top: 20px;
   max-width: 960px;
   margin: 0 auto;
   padding-left: 1rem;
@@ -114,11 +123,20 @@ a:hover {
   padding: 2rem 1rem;
 }
 
-.hero-title {
+/* .hero-title {
   font-size: 2.8rem;
   font-weight: 700;
   margin-bottom: 0.7rem;
   line-height: 1.1;
+} */
+
+.hero-title {
+  font-size: 3rem;
+  font-weight: 800;
+  background: linear-gradient(to right, #2563eb, #9333ea);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.7rem;
 }
 
 .hero-subtitle {
@@ -127,7 +145,7 @@ a:hover {
   color: inherit;
 }
 
-.btn-primary {
+/* .btn-primary {
   background-color: #2563eb;
   color: white;
   padding: 0.7rem 2rem;
@@ -140,6 +158,23 @@ a:hover {
 
 .btn-primary:hover {
   background-color: #1d4ed8;
+} */
+
+.btn-primary {
+  background: linear-gradient(to right, #2563eb, #9333ea);
+  color: white;
+  padding: 0.7rem 2rem;
+  font-weight: 600;
+  border-radius: 0.6rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 6px 20px rgba(147, 51, 234, 0.5);
 }
 
 /* Skills */

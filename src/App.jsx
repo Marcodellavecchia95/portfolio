@@ -66,9 +66,17 @@ export default function App() {
             Sono Marco, full stack developer in formazione, appassionato di
             tecnologia e soluzioni digitali.
           </motion.p>
-          <a href="#contact" className="btn-primary">
+          {/* <a href="#contact" className="btn-primary">
             Contattami
-          </a>
+          </a> */}
+          <motion.a
+            href="#contact"
+            className="btn-primary"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            Contattami
+          </motion.a>
         </section>
 
         <section id="skills" className="skills-section">
