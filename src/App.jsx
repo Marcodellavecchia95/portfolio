@@ -8,6 +8,8 @@ export default function App() {
     return localStorage.getItem("theme") === "dark";
   });
 
+  const [selectedImage, setSelectedImage] = useState(null);
+
   useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add("dark");
@@ -110,6 +112,22 @@ export default function App() {
         <section id="projects" className="projects-section">
           <h2>Progetti</h2>
           <div className="project-card">
+            <div className="project-gallery">
+              {[
+                "/img/ecommerce1.png",
+                "/img/ecommerce2.png",
+                "/img/ecommerce3.png",
+                "/img/ecommerce4.png",
+                "/img/ecommerce5.png",
+              ].map((img, index) => (
+                <img
+                  key={index}
+                  src={img}
+                  alt={`screenshot ${index + 1}`}
+                  onClick={() => setSelectedImage(img)}
+                />
+              ))}
+            </div>
             <h3>E-commerce Tech</h3>
             <p>
               Sito e-commerce per prodotti tecnologici, con frontend in React,
@@ -241,6 +259,12 @@ export default function App() {
           © {new Date().getFullYear()} Marco della Vecchia — Full Stack Web
           Developer
         </footer>
+
+        {selectedImage && (
+          <div className="lightbox" onClick={() => setSelectedImage(null)}>
+            <img src={selectedImage} alt="screenshot ingrandito" />
+          </div>
+        )}
       </main>
     </>
   );
