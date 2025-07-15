@@ -153,9 +153,11 @@ export default function App() {
               <strong>Tecnologie:</strong> React, Node.js, Express, Firebase
             </p>
             <p>
-              <strong>Funzionalità:</strong> Catalogo prodotti, CRUD completa
-              per l'aggiunta di quantità e eventualmente altri prodotti
-              attualmente: <strong>IN CORSO</strong>
+              <strong>Funzionalità:</strong> Visualizzazione del catalogo, CRUD
+              completa (aggiunta, modifica e rimozione di prodotti e quantità),
+              aggiornamento in tempo reale.
+              <br />
+              <strong>Stato:</strong> In corso
             </p>
             <p>
               <strong>GitHub:</strong>{" "}
@@ -176,6 +178,32 @@ export default function App() {
               >
                 Backend
               </a>
+            </p>
+          </div>
+          <div className="project-card">
+            <h3>Amazon Monitor Bot</h3>
+            <p>
+              Bot che monitora prezzi e disponibilità di uno o più prodotti
+              Amazon
+            </p>
+            <p>
+              <strong>Tecnologie:</strong> Javascript
+            </p>
+            <p>
+              <strong>Funzionalità:</strong> SetInterval, inserimento a proprio
+              piacere dell'ASIN cosi da poter funzionare per chiunque voglia e
+              per qualsiasi prodotto
+            </p>
+            <p>
+              <strong>GitHub:</strong>{" "}
+              <a
+                href="https://github.com/Marcodellavecchia95/inventario-frontend"
+                target="_blank"
+                rel="noreferrer"
+                className="link"
+              >
+                Link al codice
+              </a>{" "}
             </p>
           </div>
         </section>

@@ -52,13 +52,11 @@ section {
   margin-bottom: 1rem;
 }
 
-.light .nav-logo,
-.nav-links {
+.light .nav-logo {
   color: #111;
 }
 
-.dark .nav-logo,
-.nav-links {
+.dark .nav-logo {
   color: #fff;
 }
 
@@ -72,7 +70,7 @@ section {
 
 .nav-links a {
   font-weight: 500;
-  color: inherit;
+
   transition: color 0.3s ease;
 }
 
