@@ -126,6 +126,38 @@ function GalleryWithArrows({ screenshots, onSelect }) {
 
 const projects = [
   {
+    title: "Porta un Amico — Banco Desio",
+    status: "LIVE",
+    statusClass: "text-secondary bg-secondary/10 border-secondary/20",
+    hoverBorder: "hover:border-secondary/40",
+    desc: "Piattaforma MGM (Member Get Member) per campagna referral Banco Desio. Registrazione con codice presentatore univoco, gestione premi voucher via API Jakala, pannello admin SPA con analytics real-time.",
+    tags: ["#PHP", "#Vue.js", "#MySQL", "#REST_API", "#PHPMailer"],
+    links: [
+      { label: "LIVE SITE", url: "https://portaunamico.bancodesio.it" },
+    ],
+    screenshots: [
+      "/img/bancodesio1.png",
+      "/img/bancodesio2.png",
+      "/img/bancodesio3.png",
+    ],
+  },
+  {
+    title: "TuttiPremiati",
+    status: "LIVE",
+    statusClass: "text-secondary bg-secondary/10 border-secondary/20",
+    hoverBorder: "hover:border-secondary/40",
+    desc: "Migrazione completa da stack legacy .NET/SSIS a Laravel 11 + Vue 3. Architettura backend/frontend separata, autenticazione Sanctum/Fortify, import SFTP/Excel e UI moderna con PrimeVue.",
+    tags: ["#Laravel", "#Vue3", "#PHP8", "#Sanctum", "#PrimeVue", "#Tailwind"],
+    links: [
+      { label: "LIVE SITE", url: "https://tuttipremiati.it" },
+    ],
+    screenshots: [
+      "/img/tuttipremiati1.png",
+      "/img/tuttipremiati2.png",
+      "/img/tuttipremiati3.png",
+    ],
+  },
+  {
     title: "E-commerce Tech",
     status: "STABLE",
     statusClass: "text-primary bg-primary/10 border-primary/20",
@@ -621,7 +653,7 @@ export default function App() {
               </h2>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {projects.map((p, i) => (
                 <div
                   key={p.title}
