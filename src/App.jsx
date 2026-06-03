@@ -2,6 +2,10 @@ import { useState, useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { TextPlugin } from "gsap/TextPlugin";
+import { projects } from "./data/projects.js";
+import { GalleryWithArrows, Lightbox } from "./components/ProjectMedia.jsx";
+import { navigate } from "./hooks/useHashRoute.js";
+import { useLang, pick, LangToggle } from "./i18n.jsx";
 
 gsap.registerPlugin(ScrollTrigger, TextPlugin);
 
@@ -51,173 +55,6 @@ const PhoneIcon = () => (
 
 // ─── Data ────────────────────────────────────────────────────────────────────
 
-function GalleryWithArrows({ screenshots, onSelect }) {
-  const [idx, setIdx] = useState(0);
-  const total = screenshots.length;
-
-  const prev = () => setIdx((i) => (i - 1 + total) % total);
-  const next = () => setIdx((i) => (i + 1) % total);
-
-  return (
-    <div className="relative" style={{ backgroundColor: "#131319" }}>
-      {/* Immagine corrente */}
-      <div
-        className="overflow-hidden"
-        style={{ height: "160px", cursor: "pointer" }}
-        onClick={() => onSelect(screenshots[idx])}
-      >
-        <img
-          src={screenshots[idx]}
-          alt={`screenshot ${idx + 1}`}
-          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", opacity: 0.85, transition: "opacity 0.2s" }}
-          onMouseEnter={(e) => (e.currentTarget.style.opacity = 1)}
-          onMouseLeave={(e) => (e.currentTarget.style.opacity = 0.85)}
-        />
-        {/* Gradient bottom */}
-        <div className="absolute inset-0 pointer-events-none" style={{ background: "linear-gradient(to top, #131319 0%, transparent 60%)" }} />
-      </div>
-
-      {/* Frecce */}
-      <button
-        onClick={(e) => { e.stopPropagation(); prev(); }}
-        className="absolute left-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-8 h-8 rounded-sm transition-all"
-        style={{ backgroundColor: "rgba(14,14,19,0.85)", border: "1px solid rgba(164,255,185,0.2)", color: "#a4ffb9" }}
-        onMouseEnter={(e) => gsap.to(e.currentTarget, { borderColor: "rgba(164,255,185,0.7)", duration: 0.2 })}
-        onMouseLeave={(e) => gsap.to(e.currentTarget, { borderColor: "rgba(164,255,185,0.2)", duration: 0.2 })}
-      >
-        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-        </svg>
-      </button>
-      <button
-        onClick={(e) => { e.stopPropagation(); next(); }}
-        className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-8 h-8 rounded-sm transition-all"
-        style={{ backgroundColor: "rgba(14,14,19,0.85)", border: "1px solid rgba(164,255,185,0.2)", color: "#a4ffb9" }}
-        onMouseEnter={(e) => gsap.to(e.currentTarget, { borderColor: "rgba(164,255,185,0.7)", duration: 0.2 })}
-        onMouseLeave={(e) => gsap.to(e.currentTarget, { borderColor: "rgba(164,255,185,0.7)", duration: 0.2 })}
-      >
-        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-        </svg>
-      </button>
-
-      {/* Dots */}
-      <div className="flex justify-center gap-1.5 py-2">
-        {screenshots.map((_, i) => (
-          <button
-            key={i}
-            onClick={(e) => { e.stopPropagation(); setIdx(i); }}
-            style={{
-              width: i === idx ? "16px" : "6px",
-              height: "4px",
-              borderRadius: "2px",
-              backgroundColor: i === idx ? "#a4ffb9" : "rgba(164,255,185,0.2)",
-              border: "none",
-              padding: 0,
-              cursor: "pointer",
-              transition: "all 0.25s",
-            }}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-const projects = [
-  {
-    title: "Wink Suite — AI Admin Agent",
-    status: "BETA",
-    statusClass: "text-primary bg-primary/10 border-primary/20",
-    hoverBorder: "hover:border-primary/40",
-    desc: "AI copilot integrato in Wink Suite (SaaS marketing engagement multi-tenant). Agente PHP-native su Neuron AI con 8 tool tipizzati, Human-in-the-Loop approval gate server-side, isolamento multi-tenant by construction e swap DeepSeek/Ollama via config. Pattern-learning store per few-shot retrieval senza fine-tuning.",
-    tags: ["#PHP8.2", "#Laravel11", "#NeuronAI", "#Vue3", "#Inertia", "#DeepSeek", "#Ollama"],
-    links: [],
-    screenshots: [
-      "/img/wink1.png",
-      "/img/wink2.png",
-      "/img/wink3.png",
-      "/img/wink4.png",
-    ],
-  },
-  {
-    title: "Porta un Amico — Banco Desio",
-    status: "LIVE",
-    statusClass: "text-secondary bg-secondary/10 border-secondary/20",
-    hoverBorder: "hover:border-secondary/40",
-    desc: "Piattaforma MGM (Member Get Member) per campagna referral Banco Desio. Registrazione con codice presentatore univoco, gestione premi voucher via API Jakala, pannello admin SPA con analytics real-time.",
-    tags: ["#PHP", "#Vue.js", "#MySQL", "#REST_API", "#PHPMailer"],
-    links: [
-      { label: "LIVE SITE", url: "https://portaunamico.bancodesio.it" },
-    ],
-    screenshots: [
-      "/img/bancodesio1.png",
-      "/img/bancodesio2.png",
-      "/img/bancodesio3.png",
-    ],
-  },
-  {
-    title: "TuttiPremiati",
-    status: "LIVE",
-    statusClass: "text-secondary bg-secondary/10 border-secondary/20",
-    hoverBorder: "hover:border-secondary/40",
-    desc: "Migrazione completa da stack legacy .NET/SSIS a Laravel 11 + Vue 3. Architettura backend/frontend separata, autenticazione Sanctum/Fortify, import SFTP/Excel e UI moderna con PrimeVue.",
-    tags: ["#Laravel", "#Vue3", "#PHP8", "#Sanctum", "#PrimeVue", "#Tailwind"],
-    links: [
-      { label: "LIVE SITE", url: "https://tuttipremiati.it" },
-    ],
-    screenshots: [
-      "/img/tuttipremiati1.png",
-      "/img/tuttipremiati2.png",
-      "/img/tuttipremiati3.png",
-    ],
-  },
-  {
-    title: "E-commerce Tech",
-    status: "STABLE",
-    statusClass: "text-primary bg-primary/10 border-primary/20",
-    hoverBorder: "hover:border-primary/40",
-    desc: "Sito e-commerce per prodotti tecnologici con frontend React, backend Express e database MySQL. Catalogo prodotti, carrello e CRUD.",
-    tags: ["#React", "#NodeJS", "#MySQL", "#Axios"],
-    links: [
-      { label: "FRONTEND", url: "https://github.com/Marcodellavecchia95/e-commerce-project-work" },
-      { label: "BACKEND", url: "https://github.com/Marcodellavecchia95/backend-e-commerce" },
-    ],
-    screenshots: [
-      "/img/ecommerce1.png",
-      "/img/ecommerce2.png",
-      "/img/ecommerce3.png",
-      "/img/ecommerce4.png",
-      "/img/ecommerce5.png",
-    ],
-  },
-  {
-    title: "Inventario Firebase",
-    status: "LIVE",
-    statusClass: "text-secondary bg-secondary/10 border-secondary/20",
-    hoverBorder: "hover:border-secondary/40",
-    desc: "Sistema inventario real-time con React, Express e Firebase Realtime Database. CRUD completa e aggiornamenti in tempo reale.",
-    tags: ["#Firebase", "#NoSQL", "#React", "#Express"],
-    links: [
-      { label: "FRONTEND", url: "https://github.com/Marcodellavecchia95/inventario-frontend" },
-      { label: "BACKEND", url: "https://github.com/Marcodellavecchia95/backend-inventario" },
-    ],
-    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuB0OUo_ZMV7bxpqlZWGKkpZha_-HiOzgObsQcLQfPVxR5aIBdn9yNCimuDW3Pp0uFiSOPz8VORsXCOoTmhffy4_AxULVajgCdxsQ1HmE39YGCg2Eux5M4W-VVsW9UGvoC2uaFwBs5YuOacx12an-YamzJRllAYj6oc-gNO9azd1wRcyQOaPRc61MgfofULKd5nAoflsgYGR58qpRGZ7IDP5mIC7Vx7RqIUaJREIMKEHUKmzaEUI-UnDmC7I3BFAwcmtJjYSfTAognk",
-  },
-  {
-    title: "Amazon Monitor Bot",
-    status: "ACTIVE",
-    statusClass: "text-error bg-error/10 border-error/20",
-    hoverBorder: "hover:border-error/40",
-    desc: "Bot che monitora prezzi e disponibilità di prodotti Amazon tramite ASIN configurabile. Notifiche automatiche su variazioni di prezzo.",
-    tags: ["#JavaScript", "#Automation", "#SetInterval"],
-    links: [
-      { label: "CODICE", url: "https://github.com/Marcodellavecchia95/inventario-frontend" },
-    ],
-    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuA37CKqOZVmqRpe_AD0B4xWaMGrS5Z9CI2EV83318BBNNP120Zh4P6S7xqfy92s5R6e06yYHQqHjZasf-KI7dTRgc6lWWhl0XoSQZHsRarLnzhA7SW8d8TDW1MItC2mDMfpXjjqhNjEPahIuWy50V5VO88Kav6MsWOTwfXH12kIwqf_JFv0jQnLhurBq_mMx1SoLQeim5xEBjcGhqNNiPNmakUzDxY6_CjWSYIwHR4ZMFC0hSj5eEOjGBoyigB4ck0u-6iJYXRfluw",
-  },
-];
-
 const skills = [
   { label: "HTML / CSS",              sigla: "</>",  color: "#a4ffb9", glow: "0 0 28px rgba(164,255,185,0.45)", category: "FRONTEND" },
   { label: "JAVASCRIPT / REACT",      sigla: "JS",   color: "#a4ffb9", glow: "0 0 28px rgba(164,255,185,0.45)", category: "FRONTEND" },
@@ -230,6 +67,7 @@ const skills = [
 // ─── App ─────────────────────────────────────────────────────────────────────
 
 export default function App() {
+  const { lang, t } = useLang();
   const [darkMode] = useState(true);
   const [selectedImage, setSelectedImage] = useState(null);
 
@@ -392,6 +230,8 @@ export default function App() {
 
   const heroTitle = "MARCO DELLA\nVECCHIA";
 
+  const goToProject = (slug) => navigate(`#/project/${slug}`);
+
   return (
     <div className="dark">
       {/* Scanline overlay */}
@@ -407,17 +247,21 @@ export default function App() {
             style={{ fontFamily: "Space Grotesk, sans-serif" }}>
             MARCO_DV
           </div>
-          <div className="hidden md:flex gap-8 items-center">
-            {["home","skills","projects","contact"].map((link) => (
-              <a
-                key={link}
-                href={`#${link}`}
-                className="tracking-[0.15rem] uppercase text-sm font-bold text-white/60 hover:text-[#00ff88] transition-colors duration-200"
-                style={{ fontFamily: "Space Grotesk, sans-serif" }}
-              >
-                {link}
-              </a>
-            ))}
+          <div className="flex gap-8 items-center">
+            <div className="hidden md:flex gap-8 items-center">
+              {["home","skills","projects","contact"].map((link) => (
+                <a
+                  key={link}
+                  href={`#${link}`}
+                  className="tracking-[0.15rem] uppercase text-sm font-bold text-white/60 hover:text-[#00ff88] transition-colors duration-200"
+                  style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                >
+                  {t(`nav.${link}`)}
+                </a>
+              ))}
+            </div>
+            {/* Language switch */}
+            <LangToggle />
           </div>
         </div>
       </nav>
@@ -438,7 +282,7 @@ export default function App() {
               style={{ fontFamily: "IBM Plex Mono, monospace", color: "#00d2fd" }}
             >
               <span className="opacity-40">[SYSTEM_INFO]</span>
-              <span className="animate-pulse">access_granted... initializing_profile...</span>
+              <span className="animate-pulse">{t("hero.tag")}</span>
             </div>
 
             {/* Title — split chars for GSAP stagger + glitch */}
@@ -456,7 +300,7 @@ export default function App() {
                   <br key={i} />
                 ) : (
                   <span key={i} className="hero-char inline-block">
-                    {char === " " ? "\u00A0" : char}
+                    {char === " " ? " " : char}
                   </span>
                 )
               )}
@@ -471,9 +315,9 @@ export default function App() {
                 color: "#acaab1",
               }}
             >
-              FULL STACK DEVELOPER{" "}
+              {t("hero.subtitleA")}{" "}
               <span style={{ color: "#00d2fd", opacity: 0.5 }} className="px-2">//</span>{" "}
-              ASPIRING PENETRATION TESTER
+              {t("hero.subtitleB")}
             </p>
 
             {/* CTA buttons */}
@@ -490,7 +334,7 @@ export default function App() {
                 onMouseEnter={(e) => gsap.to(e.currentTarget, { boxShadow: "0 0 35px rgba(164,255,185,0.7)", scale: 1.03, duration: 0.25 })}
                 onMouseLeave={(e) => gsap.to(e.currentTarget, { boxShadow: "0 0 20px rgba(164,255,185,0.4)", scale: 1, duration: 0.25 })}
               >
-                INITIALIZE_CONTACT <TerminalIcon />
+                {t("hero.ctaContact")} <TerminalIcon />
               </a>
               <a
                 href="https://github.com/Marcodellavecchia95"
@@ -505,7 +349,7 @@ export default function App() {
                 onMouseEnter={(e) => gsap.to(e.currentTarget, { borderColor: "rgba(164,255,185,0.9)", backgroundColor: "rgba(164,255,185,0.06)", scale: 1.03, duration: 0.25 })}
                 onMouseLeave={(e) => gsap.to(e.currentTarget, { borderColor: "rgba(164,255,185,0.3)", backgroundColor: "transparent", scale: 1, duration: 0.25 })}
               >
-                VIEW_REPOSITORY <CodeIcon />
+                {t("hero.ctaRepo")} <CodeIcon />
               </a>
             </div>
           </div>
@@ -533,13 +377,13 @@ export default function App() {
                   className="text-sm tracking-widest uppercase mb-2 block"
                   style={{ fontFamily: "IBM Plex Mono, monospace", color: "#00d2fd" }}
                 >
-                  RECON_01 // CORE_COMPETENCIES
+                  {t("skills.kicker")}
                 </span>
                 <h2
                   className="text-4xl md:text-6xl font-black tracking-tight"
                   style={{ fontFamily: "Space Grotesk, sans-serif", color: "#f9f5fd" }}
                 >
-                  TECHNICAL_STACK
+                  {t("skills.title")}
                 </h2>
               </div>
               <div
@@ -658,20 +502,20 @@ export default function App() {
                 className="text-sm tracking-widest uppercase mb-2 block"
                 style={{ fontFamily: "IBM Plex Mono, monospace", color: "#a4ffb9" }}
               >
-                MODULE_02 // DEPLOYED_WORK
+                {t("projects.kicker")}
               </span>
               <h2
                 className="text-4xl md:text-6xl font-black tracking-tight"
                 style={{ fontFamily: "Space Grotesk, sans-serif", color: "#f9f5fd" }}
               >
-                FEATURED_PROJECTS
+                {t("projects.title")}
               </h2>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {projects.map((p, i) => (
                 <div
-                  key={p.title}
+                  key={p.slug}
                   ref={(el) => (projectCardsRef.current[i] = el)}
                   className={`group relative rounded-sm border glow-border ${p.hoverBorder} transition-colors duration-500`}
                   style={{ backgroundColor: "#1f1f26", borderColor: "rgba(72,71,77,0.2)" }}
@@ -685,7 +529,10 @@ export default function App() {
                     />
                   ) : (
                     /* Cover singola per gli altri progetti */
-                    <div className="h-48 overflow-hidden relative rounded-t-sm">
+                    <div
+                      className="h-48 overflow-hidden relative rounded-t-sm cursor-pointer"
+                      onClick={() => goToProject(p.slug)}
+                    >
                       <img
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-100"
                         src={p.img}
@@ -697,10 +544,15 @@ export default function App() {
                       />
                     </div>
                   )}
-                  <div className="p-6">
+
+                  {/* Corpo card — cliccabile verso la pagina dedicata */}
+                  <div
+                    className="p-6 cursor-pointer"
+                    onClick={() => goToProject(p.slug)}
+                  >
                     <div className="flex justify-between items-start mb-4">
                       <h3
-                        className="font-bold text-xl"
+                        className="font-bold text-xl transition-colors group-hover:text-[#a4ffb9]"
                         style={{ fontFamily: "Space Grotesk, sans-serif", color: "#f9f5fd" }}
                       >
                         {p.title}
@@ -713,34 +565,44 @@ export default function App() {
                       </span>
                     </div>
                     <p className="text-sm mb-4 leading-relaxed" style={{ color: "#acaab1" }}>
-                      {p.desc}
+                      {pick(p.desc, lang)}
                     </p>
                     <div className="flex flex-wrap gap-2 mb-6">
-                      {p.tags.map((t) => (
+                      {p.tags.map((tag) => (
                         <span
-                          key={t}
+                          key={tag}
                           className="text-[10px]"
                           style={{ fontFamily: "IBM Plex Mono, monospace", color: "#00d2fd" }}
                         >
-                          {t}
+                          {tag}
                         </span>
                       ))}
                     </div>
-                    <div className="flex gap-4">
-                      {p.links.map((l) => (
-                        <a
-                          key={l.label}
-                          href={l.url}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="inline-flex items-center gap-2 text-xs tracking-widest font-bold uppercase transition-colors"
-                          style={{ fontFamily: "Space Grotesk, sans-serif", color: "#a4ffb9" }}
-                          onMouseEnter={(e) => gsap.to(e.currentTarget, { color: "#00fd87", x: 3, duration: 0.2 })}
-                          onMouseLeave={(e) => gsap.to(e.currentTarget, { color: "#a4ffb9", x: 0, duration: 0.2 })}
-                        >
-                          {l.label} <ArrowIcon />
-                        </a>
-                      ))}
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="flex gap-4">
+                        {p.links.map((l) => (
+                          <a
+                            key={l.label}
+                            href={l.url}
+                            target="_blank"
+                            rel="noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="inline-flex items-center gap-2 text-xs tracking-widest font-bold uppercase transition-colors"
+                            style={{ fontFamily: "Space Grotesk, sans-serif", color: "#76747b" }}
+                            onMouseEnter={(e) => gsap.to(e.currentTarget, { color: "#00d2fd", x: 3, duration: 0.2 })}
+                            onMouseLeave={(e) => gsap.to(e.currentTarget, { color: "#76747b", x: 0, duration: 0.2 })}
+                          >
+                            {l.label} <ArrowIcon />
+                          </a>
+                        ))}
+                      </div>
+                      {/* CTA dettagli */}
+                      <span
+                        className="inline-flex items-center gap-2 text-xs tracking-widest font-bold uppercase shrink-0"
+                        style={{ fontFamily: "Space Grotesk, sans-serif", color: "#a4ffb9" }}
+                      >
+                        {t("projects.details")} <ArrowIcon />
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -766,13 +628,13 @@ export default function App() {
                   className="text-sm tracking-widest uppercase mb-4 block"
                   style={{ fontFamily: "IBM Plex Mono, monospace", color: "#00d2fd" }}
                 >
-                  ESTABLISH_UPLINK
+                  {t("contact.kicker")}
                 </span>
                 <h2
                   className="text-4xl md:text-5xl font-black tracking-tight mb-8 uppercase"
                   style={{ fontFamily: "Space Grotesk, sans-serif", color: "#f9f5fd" }}
                 >
-                  Let's Connect
+                  {t("contact.title")}
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
                   <div
@@ -786,7 +648,7 @@ export default function App() {
                       className="text-xs uppercase mb-1"
                       style={{ fontFamily: "IBM Plex Mono, monospace", color: "#76747b" }}
                     >
-                      SECURE_MAIL
+                      {t("contact.mail")}
                     </span>
                     <a
                       href="mailto:mdellavecchia95@gmail.com"
@@ -809,7 +671,7 @@ export default function App() {
                       className="text-xs uppercase mb-1"
                       style={{ fontFamily: "IBM Plex Mono, monospace", color: "#76747b" }}
                     >
-                      ENCRYPTED_LINE
+                      {t("contact.phone")}
                     </span>
                     <span
                       className="font-bold text-base"
@@ -854,49 +716,7 @@ export default function App() {
       </main>
 
       {/* ── Lightbox ───────────────────────────────────────────────────── */}
-      {selectedImage && (
-        <div
-          className="fixed inset-0 z-[200] flex items-center justify-center"
-          style={{ backgroundColor: "rgba(10,10,15,0.92)", backdropFilter: "blur(6px)" }}
-          onClick={() => setSelectedImage(null)}
-        >
-          {/* Cornice neon */}
-          <div
-            className="relative max-w-5xl w-full mx-6"
-            style={{ boxShadow: "0 0 40px rgba(164,255,185,0.2), 0 0 80px rgba(164,255,185,0.08)" }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Barra titolo stile terminale */}
-            <div
-              className="flex items-center justify-between px-4 py-2"
-              style={{ backgroundColor: "#19191f", borderBottom: "1px solid rgba(164,255,185,0.15)" }}
-            >
-              <div className="flex gap-2">
-                <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "#ff716c" }} />
-                <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "#a4ffb9" }} />
-                <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "#00d2fd" }} />
-              </div>
-              <span style={{ fontFamily: "IBM Plex Mono, monospace", fontSize: "0.65rem", color: "#76747b", letterSpacing: "0.1em" }}>
-                SCREENSHOT_VIEWER // ESC TO CLOSE
-              </span>
-              <button
-                onClick={() => setSelectedImage(null)}
-                style={{ fontFamily: "IBM Plex Mono, monospace", fontSize: "0.7rem", color: "#76747b", background: "none", border: "none", cursor: "pointer", letterSpacing: "0.1em" }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "#ff716c")}
-                onMouseLeave={(e) => (e.currentTarget.style.color = "#76747b")}
-              >
-                [X]
-              </button>
-            </div>
-            <img
-              src={selectedImage}
-              alt="screenshot ingrandito"
-              className="w-full block"
-              style={{ maxHeight: "80vh", objectFit: "contain", backgroundColor: "#0e0e13" }}
-            />
-          </div>
-        </div>
-      )}
+      <Lightbox image={selectedImage} onClose={() => setSelectedImage(null)} />
 
       {/* ── Footer ─────────────────────────────────────────────────────── */}
       <footer
