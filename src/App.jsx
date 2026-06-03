@@ -126,6 +126,21 @@ function GalleryWithArrows({ screenshots, onSelect }) {
 
 const projects = [
   {
+    title: "Wink Suite — AI Admin Agent",
+    status: "BETA",
+    statusClass: "text-primary bg-primary/10 border-primary/20",
+    hoverBorder: "hover:border-primary/40",
+    desc: "AI copilot integrato in Wink Suite (SaaS marketing engagement multi-tenant). Agente PHP-native su Neuron AI con 8 tool tipizzati, Human-in-the-Loop approval gate server-side, isolamento multi-tenant by construction e swap DeepSeek/Ollama via config. Pattern-learning store per few-shot retrieval senza fine-tuning.",
+    tags: ["#PHP8.2", "#Laravel11", "#NeuronAI", "#Vue3", "#Inertia", "#DeepSeek", "#Ollama"],
+    links: [],
+    screenshots: [
+      "/img/wink1.png",
+      "/img/wink2.png",
+      "/img/wink3.png",
+      "/img/wink4.png",
+    ],
+  },
+  {
     title: "Porta un Amico — Banco Desio",
     status: "LIVE",
     statusClass: "text-secondary bg-secondary/10 border-secondary/20",
