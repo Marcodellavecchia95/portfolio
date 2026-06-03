@@ -1,96 +1,136 @@
-import { createContext, useContext, useState, useEffect, useCallback } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
 
 // Lingua di default: italiano. Persistita in localStorage.
 const DEFAULT_LANG = "it";
 const STORAGE_KEY = "lang";
 
-const LangContext = createContext({ lang: DEFAULT_LANG, setLang: () => {}, toggle: () => {}, t: (k) => k });
+const LangContext = createContext({
+  lang: DEFAULT_LANG,
+  setLang: () => {},
+  toggle: () => {},
+  t: (k) => k,
+});
 
 // Dizionario delle stringhe di interfaccia (il contenuto dei progetti è in data/projects.js)
 const dict = {
   it: {
-    nav: { home: "home", skills: "skills", projects: "projects", contact: "contact" },
-    hero: {
-      tag: "access_granted... initializing_profile...",
-      subtitleA: "FULL STACK DEVELOPER",
-      subtitleB: "ASPIRING PENETRATION TESTER",
-      ctaContact: "INITIALIZE_CONTACT",
-      ctaRepo: "VIEW_REPOSITORY",
+    nav: {
+      home: "home",
+      skills: "competenze",
+      projects: "progetti",
+      contact: "contatti",
     },
-    skills: { kicker: "RECON_01 // CORE_COMPETENCIES", title: "TECHNICAL_STACK" },
+    hero: {
+      eyebrow: "full-stack developer — secure by habit",
+      namePhrase: "Marco della Vecchia,\ncostruisco",
+      emWord: "software",
+      lede: "Full-stack su PHP/Laravel e Vue, con un debole per i sistemi AI-driven e per la sicurezza applicativa.",
+      metaRoleK: "Ruolo",
+      metaRoleV: "Full-stack / AI engineering",
+      metaStackK: "Stack",
+      metaStackV: "Laravel · Vue · Python",
+      metaBaseK: "Base",
+      metaBaseV: "Italia · IT/EN",
+      ctaContact: "Contattami",
+      ctaRepo: "GitHub",
+    },
+    skills: { kicker: "§ Stack", title: "Competenze tecniche" },
     projects: {
-      kicker: "MODULE_02 // DEPLOYED_WORK",
-      title: "FEATURED_PROJECTS",
-      details: "DETTAGLI",
+      kicker: "§ Lavori selezionati",
+      title: "Progetti",
+      details: "Dettagli",
     },
     contact: {
-      kicker: "ESTABLISH_UPLINK",
+      kicker: "§ Contatti",
       title: "Mettiamoci in contatto",
-      mail: "SECURE_MAIL",
-      phone: "ENCRYPTED_LINE",
+      mail: "Email",
+      phone: "Telefono",
     },
     detail: {
-      dossier: "DOSSIER // APPROFONDIMENTO",
-      role: "RUOLO",
-      year: "ANNO",
-      overview: "OVERVIEW",
-      problem: "IL PROBLEMA",
-      architecture: "ARCHITETTURA",
-      highlights: "HIGHLIGHTS TECNICI",
-      stack: "STACK & SCELTE",
-      numbers: "NUMERI",
-      nerdy: "// THE_NERDY_PART",
-      next: "PROSSIMO PROGETTO",
-      back: "INDIETRO",
-      allProjects: "TUTTI I PROGETTI",
-      notFound: "ERROR_404 // PROGETTO_NON_TROVATO",
-      backToProjects: "TORNA AI PROGETTI",
+      dossier: "Dossier — approfondimento",
+      role: "Ruolo",
+      year: "Anno",
+      overview: "Overview",
+      problem: "Il problema",
+      architecture: "Architettura",
+      highlights: "Highlights tecnici",
+      stack: "Stack & scelte",
+      numbers: "Numeri",
+      nerdy: "Dettagli tecnici",
+      next: "Prossimo progetto",
+      back: "Indietro",
+      allProjects: "Tutti i progetti",
+      notFound: "404 — Progetto non trovato",
+      backToProjects: "Torna ai progetti",
     },
   },
   en: {
-    nav: { home: "home", skills: "skills", projects: "projects", contact: "contact" },
-    hero: {
-      tag: "access_granted... initializing_profile...",
-      subtitleA: "FULL STACK DEVELOPER",
-      subtitleB: "ASPIRING PENETRATION TESTER",
-      ctaContact: "INITIALIZE_CONTACT",
-      ctaRepo: "VIEW_REPOSITORY",
+    nav: {
+      home: "home",
+      skills: "skills",
+      projects: "work",
+      contact: "contact",
     },
-    skills: { kicker: "RECON_01 // CORE_COMPETENCIES", title: "TECHNICAL_STACK" },
+    hero: {
+      eyebrow: "full-stack developer — secure by habit",
+      namePhrase: "Marco della Vecchia,\nI build",
+      emWord: "software",
+      lede: "Full-stack on PHP/Laravel and Vue, with a soft spot for AI-driven systems and application security.",
+      metaRoleK: "Role",
+      metaRoleV: "Full-stack / AI engineering",
+      metaStackK: "Stack",
+      metaStackV: "Laravel · Vue · Python",
+      metaBaseK: "Based",
+      metaBaseV: "Italy · IT/EN",
+      ctaContact: "Get in touch",
+      ctaRepo: "GitHub",
+    },
+    skills: { kicker: "§ Stack", title: "Technical skills" },
     projects: {
-      kicker: "MODULE_02 // DEPLOYED_WORK",
-      title: "FEATURED_PROJECTS",
-      details: "DETAILS",
+      kicker: "§ Selected work",
+      title: "Work",
+      details: "Details",
     },
     contact: {
-      kicker: "ESTABLISH_UPLINK",
+      kicker: "§ Contact",
       title: "Let's Connect",
-      mail: "SECURE_MAIL",
-      phone: "ENCRYPTED_LINE",
+      mail: "Email",
+      phone: "Phone",
     },
     detail: {
-      dossier: "DOSSIER // DEEP_DIVE",
-      role: "ROLE",
-      year: "YEAR",
-      overview: "OVERVIEW",
-      problem: "THE PROBLEM",
-      architecture: "ARCHITECTURE",
-      highlights: "TECHNICAL HIGHLIGHTS",
-      stack: "STACK & CHOICES",
-      numbers: "NUMBERS",
-      nerdy: "// THE_NERDY_PART",
-      next: "NEXT PROJECT",
-      back: "BACK",
-      allProjects: "ALL PROJECTS",
-      notFound: "ERROR_404 // PROJECT_NOT_FOUND",
-      backToProjects: "BACK TO PROJECTS",
+      dossier: "Dossier — deep dive",
+      role: "Role",
+      year: "Year",
+      overview: "Overview",
+      problem: "The problem",
+      architecture: "Architecture",
+      highlights: "Technical highlights",
+      stack: "Stack & choices",
+      numbers: "Numbers",
+      nerdy: "Technical details",
+      next: "Next project",
+      back: "Back",
+      allProjects: "All projects",
+      notFound: "404 — Project not found",
+      backToProjects: "Back to projects",
     },
   },
 };
 
 // Restituisce il valore giusto da un campo che può essere stringa o { it, en }.
 export function pick(value, lang) {
-  if (value && typeof value === "object" && !Array.isArray(value) && ("it" in value || "en" in value)) {
+  if (
+    value &&
+    typeof value === "object" &&
+    !Array.isArray(value) &&
+    ("it" in value || "en" in value)
+  ) {
     return value[lang] ?? value.it ?? value.en;
   }
   return value;
@@ -108,7 +148,10 @@ export function LangProvider({ children }) {
   }, [lang]);
 
   const setLang = useCallback((l) => setLangState(l), []);
-  const toggle = useCallback(() => setLangState((l) => (l === "it" ? "en" : "it")), []);
+  const toggle = useCallback(
+    () => setLangState((l) => (l === "it" ? "en" : "it")),
+    [],
+  );
 
   // t("projects.details") → naviga nel dizionario
   const t = useCallback(
@@ -121,10 +164,14 @@ export function LangProvider({ children }) {
       }
       return node;
     },
-    [lang]
+    [lang],
   );
 
-  return <LangContext.Provider value={{ lang, setLang, toggle, t }}>{children}</LangContext.Provider>;
+  return (
+    <LangContext.Provider value={{ lang, setLang, toggle, t }}>
+      {children}
+    </LangContext.Provider>
+  );
 }
 
 export function useLang() {
@@ -138,19 +185,37 @@ export function LangToggle({ className = "" }) {
     <button
       onClick={toggle}
       aria-label={lang === "it" ? "Switch to English" : "Passa all'italiano"}
-      className={`flex items-center gap-1 px-2.5 py-1 rounded-sm border text-xs font-bold tracking-widest uppercase transition-colors ${className}`}
+      className={`flex items-center gap-1.5 px-3 py-1 rounded-full border text-xs tracking-wider transition-colors ${className}`}
       style={{
         fontFamily: "IBM Plex Mono, monospace",
-        borderColor: "rgba(164,255,185,0.3)",
-        color: "#a4ffb9",
-        background: "rgba(164,255,185,0.04)",
+        borderColor: "rgba(142,137,128,0.35)",
+        color: "#A39E95",
+        background: "transparent",
       }}
-      onMouseEnter={(e) => (e.currentTarget.style.borderColor = "rgba(164,255,185,0.8)")}
-      onMouseLeave={(e) => (e.currentTarget.style.borderColor = "rgba(164,255,185,0.3)")}
+      onMouseEnter={(e) =>
+        (e.currentTarget.style.borderColor = "rgba(224,162,78,0.7)")
+      }
+      onMouseLeave={(e) =>
+        (e.currentTarget.style.borderColor = "rgba(142,137,128,0.35)")
+      }
     >
-      <span style={{ color: lang === "it" ? "#a4ffb9" : "#76747b" }}>IT</span>
+      <span
+        style={{
+          color: lang === "it" ? "#E0A24E" : "#8E8980",
+          fontWeight: lang === "it" ? 600 : 400,
+        }}
+      >
+        IT
+      </span>
       <span style={{ color: "#48474d" }}>/</span>
-      <span style={{ color: lang === "en" ? "#a4ffb9" : "#76747b" }}>EN</span>
+      <span
+        style={{
+          color: lang === "en" ? "#E0A24E" : "#8E8980",
+          fontWeight: lang === "en" ? 600 : 400,
+        }}
+      >
+        EN
+      </span>
     </button>
   );
 }

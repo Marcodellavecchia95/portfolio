@@ -1,6 +1,11 @@
 import { useState } from "react";
 import gsap from "gsap";
 
+const AMBER = "#E0A24E";
+const SURFACE = "#1B1A1E";
+const LINE = "rgba(142,137,128,0.3)";
+const LINE_HOVER = "rgba(224,162,78,0.7)";
+
 // ─── Gallery con frecce ────────────────────────────────────────────────────────
 export function GalleryWithArrows({ screenshots, onSelect, height = "160px" }) {
   const [idx, setIdx] = useState(0);
@@ -10,7 +15,7 @@ export function GalleryWithArrows({ screenshots, onSelect, height = "160px" }) {
   const next = () => setIdx((i) => (i + 1) % total);
 
   return (
-    <div className="relative" style={{ backgroundColor: "#131319" }}>
+    <div className="relative" style={{ backgroundColor: SURFACE }}>
       {/* Immagine corrente */}
       <div
         className="overflow-hidden"
@@ -20,49 +25,48 @@ export function GalleryWithArrows({ screenshots, onSelect, height = "160px" }) {
         <img
           src={screenshots[idx]}
           alt={`screenshot ${idx + 1}`}
-          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", opacity: 0.85, transition: "opacity 0.2s" }}
+          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", opacity: 0.9, transition: "opacity 0.2s" }}
           onMouseEnter={(e) => (e.currentTarget.style.opacity = 1)}
-          onMouseLeave={(e) => (e.currentTarget.style.opacity = 0.85)}
+          onMouseLeave={(e) => (e.currentTarget.style.opacity = 0.9)}
         />
-        {/* Gradient bottom */}
-        <div className="absolute inset-0 pointer-events-none" style={{ background: "linear-gradient(to top, #131319 0%, transparent 60%)" }} />
+        <div className="absolute inset-0 pointer-events-none" style={{ background: "linear-gradient(to top, rgba(27,26,30,0.55) 0%, transparent 55%)" }} />
       </div>
 
       {/* Frecce */}
       <button
         onClick={(e) => { e.stopPropagation(); prev(); }}
-        className="absolute left-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-8 h-8 rounded-sm transition-all"
-        style={{ backgroundColor: "rgba(14,14,19,0.85)", border: "1px solid rgba(164,255,185,0.2)", color: "#a4ffb9" }}
-        onMouseEnter={(e) => gsap.to(e.currentTarget, { borderColor: "rgba(164,255,185,0.7)", duration: 0.2 })}
-        onMouseLeave={(e) => gsap.to(e.currentTarget, { borderColor: "rgba(164,255,185,0.2)", duration: 0.2 })}
+        className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center justify-center w-9 h-9 rounded-full transition-all"
+        style={{ backgroundColor: "rgba(15,14,17,0.8)", border: `1px solid ${LINE}`, color: AMBER }}
+        onMouseEnter={(e) => gsap.to(e.currentTarget, { borderColor: LINE_HOVER, duration: 0.2 })}
+        onMouseLeave={(e) => gsap.to(e.currentTarget, { borderColor: LINE, duration: 0.2 })}
       >
-        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
         </svg>
       </button>
       <button
         onClick={(e) => { e.stopPropagation(); next(); }}
-        className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-8 h-8 rounded-sm transition-all"
-        style={{ backgroundColor: "rgba(14,14,19,0.85)", border: "1px solid rgba(164,255,185,0.2)", color: "#a4ffb9" }}
-        onMouseEnter={(e) => gsap.to(e.currentTarget, { borderColor: "rgba(164,255,185,0.7)", duration: 0.2 })}
-        onMouseLeave={(e) => gsap.to(e.currentTarget, { borderColor: "rgba(164,255,185,0.2)", duration: 0.2 })}
+        className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center w-9 h-9 rounded-full transition-all"
+        style={{ backgroundColor: "rgba(15,14,17,0.8)", border: `1px solid ${LINE}`, color: AMBER }}
+        onMouseEnter={(e) => gsap.to(e.currentTarget, { borderColor: LINE_HOVER, duration: 0.2 })}
+        onMouseLeave={(e) => gsap.to(e.currentTarget, { borderColor: LINE, duration: 0.2 })}
       >
-        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
         </svg>
       </button>
 
       {/* Dots */}
-      <div className="flex justify-center gap-1.5 py-2">
+      <div className="flex justify-center gap-1.5 py-3">
         {screenshots.map((_, i) => (
           <button
             key={i}
             onClick={(e) => { e.stopPropagation(); setIdx(i); }}
             style={{
-              width: i === idx ? "16px" : "6px",
+              width: i === idx ? "18px" : "6px",
               height: "4px",
               borderRadius: "2px",
-              backgroundColor: i === idx ? "#a4ffb9" : "rgba(164,255,185,0.2)",
+              backgroundColor: i === idx ? AMBER : "rgba(142,137,128,0.3)",
               border: "none",
               padding: 0,
               cursor: "pointer",
@@ -81,42 +85,35 @@ export function Lightbox({ image, onClose }) {
   return (
     <div
       className="fixed inset-0 z-[200] flex items-center justify-center"
-      style={{ backgroundColor: "rgba(10,10,15,0.92)", backdropFilter: "blur(6px)" }}
+      style={{ backgroundColor: "rgba(10,9,12,0.92)", backdropFilter: "blur(6px)" }}
       onClick={onClose}
     >
-      {/* Cornice neon */}
       <div
-        className="relative max-w-5xl w-full mx-6"
-        style={{ boxShadow: "0 0 40px rgba(164,255,185,0.2), 0 0 80px rgba(164,255,185,0.08)" }}
+        className="relative max-w-5xl w-full mx-6 rounded-lg overflow-hidden"
+        style={{ boxShadow: "0 0 60px rgba(0,0,0,0.6)", border: "1px solid rgba(142,137,128,0.25)" }}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Barra titolo stile terminale */}
         <div
-          className="flex items-center justify-between px-4 py-2"
-          style={{ backgroundColor: "#19191f", borderBottom: "1px solid rgba(164,255,185,0.15)" }}
+          className="flex items-center justify-between px-4 py-2.5"
+          style={{ backgroundColor: SURFACE, borderBottom: `1px solid rgba(142,137,128,0.2)` }}
         >
-          <div className="flex gap-2">
-            <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "#ff716c" }} />
-            <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "#a4ffb9" }} />
-            <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "#00d2fd" }} />
-          </div>
-          <span style={{ fontFamily: "IBM Plex Mono, monospace", fontSize: "0.65rem", color: "#76747b", letterSpacing: "0.1em" }}>
-            SCREENSHOT_VIEWER // ESC TO CLOSE
+          <span style={{ fontFamily: "IBM Plex Mono, monospace", fontSize: "0.65rem", color: "#8E8980", letterSpacing: "0.1em" }}>
+            screenshot — esc per chiudere
           </span>
           <button
             onClick={onClose}
-            style={{ fontFamily: "IBM Plex Mono, monospace", fontSize: "0.7rem", color: "#76747b", background: "none", border: "none", cursor: "pointer", letterSpacing: "0.1em" }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "#ff716c")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "#76747b")}
+            style={{ fontFamily: "IBM Plex Mono, monospace", fontSize: "0.7rem", color: "#8E8980", background: "none", border: "none", cursor: "pointer", letterSpacing: "0.06em" }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = AMBER)}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "#8E8980")}
           >
-            [X]
+            chiudi ✕
           </button>
         </div>
         <img
           src={image}
           alt="screenshot ingrandito"
           className="w-full block"
-          style={{ maxHeight: "80vh", objectFit: "contain", backgroundColor: "#0e0e13" }}
+          style={{ maxHeight: "80vh", objectFit: "contain", backgroundColor: "#0F0E11" }}
         />
       </div>
     </div>

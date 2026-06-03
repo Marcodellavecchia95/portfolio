@@ -5,36 +5,47 @@ import { GalleryWithArrows, Lightbox } from "../components/ProjectMedia.jsx";
 import { navigate } from "../hooks/useHashRoute.js";
 import { useLang, pick, LangToggle } from "../i18n.jsx";
 
-const ArrowIcon = () => (
-  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+const AMBER = "#E0A24E";
+const INK = "#F6F1E9";
+const BODY = "#C4BEB3";
+const MUTED = "#8E8980";
+const LINE = "var(--color-outline-variant)";
+const SURFACE = "#1B1A1E";
+
+const prefersReduced =
+  typeof window !== "undefined" &&
+  window.matchMedia &&
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+const ArrowIcon = ({ className = "w-4 h-4" }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.6}>
     <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
   </svg>
 );
 
 const BackArrow = () => (
-  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.6}>
     <path strokeLinecap="round" strokeLinejoin="round" d="M7 16l-4-4m0 0l4-4m-4 4h18" />
   </svg>
 );
 
-// Etichetta sezione stile terminale
-function SectionLabel({ index, children, color = "#a4ffb9" }) {
+// Kicker di sezione editoriale: "01 — Overview"
+function SectionLabel({ index, children }) {
   return (
     <span
-      className="text-xs tracking-widest uppercase mb-3 block"
-      style={{ fontFamily: "IBM Plex Mono, monospace", color }}
+      className="block mb-4"
+      style={{ fontFamily: "IBM Plex Mono, monospace", fontSize: "12px", letterSpacing: "0.08em", color: MUTED, textTransform: "uppercase" }}
     >
-      {String(index).padStart(2, "0")} // {children}
+      <span style={{ color: AMBER }}>{String(index).padStart(2, "0")}</span> — {children}
     </span>
   );
 }
 
-// Paragrafi multipli da stringa con doppio newline
 function Prose({ text }) {
   return (
     <>
       {String(text).split("\n\n").map((para, i) => (
-        <p key={i} className="text-base leading-relaxed mb-4" style={{ color: "#acaab1" }}>
+        <p key={i} className="mb-4" style={{ fontSize: "16px", lineHeight: 1.65, color: BODY }}>
           {para}
         </p>
       ))}
@@ -48,46 +59,34 @@ export default function ProjectDetail({ slug }) {
   const [selectedImage, setSelectedImage] = useState(null);
   const rootRef = useRef(null);
 
-  // Scroll in cima al cambio progetto
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
   }, [slug]);
 
-  // Esc chiude lightbox
   useEffect(() => {
-    const onKey = (e) => {
-      if (e.key === "Escape") setSelectedImage(null);
-    };
+    const onKey = (e) => { if (e.key === "Escape") setSelectedImage(null); };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  // Entrance animation
   useEffect(() => {
-    if (!project) return;
+    if (!project || prefersReduced) return;
     const ctx = gsap.context(() => {
-      gsap.from(".pd-fade", {
-        opacity: 0,
-        y: 30,
-        duration: 0.6,
-        stagger: 0.08,
-        ease: "power3.out",
-      });
+      gsap.from(".pd-fade", { opacity: 0, y: 24, duration: 0.6, stagger: 0.07, ease: "power2.out" });
     }, rootRef);
     return () => ctx.revert();
   }, [slug, project]);
 
-  // 404
   if (!project) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center px-8" style={{ backgroundColor: "#0e0e13" }}>
-        <span style={{ fontFamily: "IBM Plex Mono, monospace", color: "#ff716c" }} className="mb-4">
+      <div className="min-h-screen flex flex-col items-center justify-center px-8" style={{ backgroundColor: "var(--color-background)" }}>
+        <span style={{ fontFamily: "IBM Plex Mono, monospace", color: "#C96A5A" }} className="mb-4">
           {t("detail.notFound")}
         </span>
         <button
           onClick={() => navigate("#projects")}
-          className="inline-flex items-center gap-2 text-sm tracking-widest font-bold uppercase"
-          style={{ fontFamily: "Space Grotesk, sans-serif", color: "#a4ffb9", background: "none", border: "none", cursor: "pointer" }}
+          className="inline-flex items-center gap-2 text-sm"
+          style={{ color: AMBER, background: "none", border: "none", cursor: "pointer" }}
         >
           <BackArrow /> {t("detail.backToProjects")}
         </button>
@@ -97,108 +96,90 @@ export default function ProjectDetail({ slug }) {
 
   const d = project.detail || {};
   const media = project.screenshots || (project.img ? [project.img] : []);
-
-  // Progetto successivo per la navigazione in fondo
   const currentIdx = projects.findIndex((p) => p.slug === project.slug);
   const nextProject = projects[(currentIdx + 1) % projects.length];
 
   return (
-    <div ref={rootRef} className="dark relative" style={{ backgroundColor: "#0e0e13", minHeight: "100vh" }}>
-      {/* Scanline overlay */}
-      <div className="scanline-overlay fixed inset-0 z-[100] pointer-events-none" />
-
+    <div ref={rootRef} className="relative" style={{ backgroundColor: "var(--color-background)", minHeight: "100vh" }}>
       {/* ── Top bar ─────────────────────────────────────────────────────── */}
-      <nav className="sticky top-0 w-full z-50 bg-[#0e0e13]/80 backdrop-blur-xl border-b border-[#00ff88]/10">
-        <div className="flex justify-between items-center px-6 py-4 max-w-5xl mx-auto">
+      <nav className="sticky top-0 w-full z-50" style={{ backgroundColor: "rgba(20,19,22,0.8)", backdropFilter: "blur(12px)", borderBottom: `1px solid ${LINE}` }}>
+        <div className="flex justify-between items-center px-6 md:px-8 py-4 max-w-4xl mx-auto">
           <button
             onClick={() => navigate("#projects")}
-            className="inline-flex items-center gap-2 text-sm tracking-widest font-bold uppercase transition-colors"
-            style={{ fontFamily: "Space Grotesk, sans-serif", color: "#a4ffb9", background: "none", border: "none", cursor: "pointer" }}
-            onMouseEnter={(e) => gsap.to(e.currentTarget, { x: -3, color: "#00fd87", duration: 0.2 })}
-            onMouseLeave={(e) => gsap.to(e.currentTarget, { x: 0, color: "#a4ffb9", duration: 0.2 })}
+            className="inline-flex items-center gap-2 text-sm transition-colors"
+            style={{ color: AMBER, background: "none", border: "none", cursor: "pointer" }}
+            onMouseEnter={(e) => gsap.to(e.currentTarget, { x: -3, duration: 0.2 })}
+            onMouseLeave={(e) => gsap.to(e.currentTarget, { x: 0, duration: 0.2 })}
           >
             <BackArrow /> {t("detail.back")}
           </button>
           <div className="flex items-center gap-4">
             <button
               onClick={() => navigate("#/")}
-              className="text-lg font-black tracking-tighter text-[#00ff88] drop-shadow-[0_0_8px_rgba(0,255,136,0.4)]"
-              style={{ fontFamily: "Space Grotesk, sans-serif", background: "none", border: "none", cursor: "pointer" }}
+              style={{ fontFamily: "Fraunces, serif", fontWeight: 600, fontSize: "15px", color: INK, background: "none", border: "none", cursor: "pointer" }}
             >
-              MARCO_DV
+              Marco della Vecchia
             </button>
             <LangToggle />
           </div>
         </div>
       </nav>
 
-      <main className="max-w-5xl mx-auto px-8 md:px-12 py-12 md:py-16">
+      <main className="max-w-4xl mx-auto px-6 md:px-8 py-12 md:py-16">
 
         {/* ── Hero ─────────────────────────────────────────────────────── */}
         <header className="mb-12">
-          <div className="pd-fade flex items-center gap-3 mb-4">
-            <span
-              className={`text-[10px] px-2 py-1 rounded-sm border ${project.statusClass}`}
-              style={{ fontFamily: "IBM Plex Mono, monospace" }}
-            >
-              {project.status}
-            </span>
-            <span className="text-xs" style={{ fontFamily: "IBM Plex Mono, monospace", color: "#76747b" }}>
-              {t("detail.dossier")}
-            </span>
+          <div className="pd-fade flex items-center gap-3 mb-5" style={{ fontFamily: "IBM Plex Mono, monospace", fontSize: "12px", color: MUTED }}>
+            <span className={`px-2 py-0.5 rounded-full border ${project.statusClass}`}>{project.status}</span>
+            <span style={{ letterSpacing: "0.06em" }}>{t("detail.dossier")}</span>
           </div>
 
           <h1
-            className="pd-fade font-black tracking-tight mb-4 leading-[1.02]"
-            style={{ fontFamily: "Space Grotesk, sans-serif", color: "#f9f5fd", fontSize: "clamp(2rem, 5vw, 3.5rem)" }}
+            className="pd-fade mb-5"
+            style={{ fontFamily: "Fraunces, serif", fontWeight: 500, fontSize: "clamp(34px,6vw,60px)", lineHeight: 1.04, letterSpacing: "-0.015em", color: INK }}
           >
             {project.title}
           </h1>
 
           {d.tagline && (
-            <p className="pd-fade text-lg md:text-xl mb-6 max-w-3xl" style={{ color: "#acaab1", fontFamily: "Space Grotesk, sans-serif" }}>
+            <p className="pd-fade mb-7 max-w-2xl" style={{ fontSize: "19px", lineHeight: 1.55, color: BODY }}>
               {pick(d.tagline, lang)}
             </p>
           )}
 
-          {/* Meta riga */}
-          <div className="pd-fade flex flex-wrap gap-x-8 gap-y-2 mb-6">
+          <div className="pd-fade flex flex-wrap gap-x-9 gap-y-3 mb-6" style={{ fontFamily: "IBM Plex Mono, monospace", fontSize: "13px" }}>
             {d.role && (
               <div>
-                <span className="text-[10px] uppercase block" style={{ fontFamily: "IBM Plex Mono, monospace", color: "#76747b" }}>{t("detail.role")}</span>
-                <span className="text-sm" style={{ color: "#f9f5fd", fontFamily: "Space Grotesk, sans-serif" }}>{pick(d.role, lang)}</span>
+                <span className="block mb-1" style={{ color: MUTED, textTransform: "uppercase", letterSpacing: "0.1em", fontSize: "11px" }}>{t("detail.role")}</span>
+                <span style={{ color: INK }}>{pick(d.role, lang)}</span>
               </div>
             )}
             {d.year && (
               <div>
-                <span className="text-[10px] uppercase block" style={{ fontFamily: "IBM Plex Mono, monospace", color: "#76747b" }}>{t("detail.year")}</span>
-                <span className="text-sm" style={{ color: "#f9f5fd", fontFamily: "Space Grotesk, sans-serif" }}>{d.year}</span>
+                <span className="block mb-1" style={{ color: MUTED, textTransform: "uppercase", letterSpacing: "0.1em", fontSize: "11px" }}>{t("detail.year")}</span>
+                <span style={{ color: INK }}>{d.year}</span>
               </div>
             )}
           </div>
 
-          {/* Tags */}
-          <div className="pd-fade flex flex-wrap gap-2 mb-6">
+          <div className="pd-fade flex flex-wrap gap-3 mb-6">
             {project.tags.map((tag) => (
-              <span key={tag} className="text-[11px]" style={{ fontFamily: "IBM Plex Mono, monospace", color: "#00d2fd" }}>
-                {tag}
-              </span>
+              <span key={tag} style={{ fontFamily: "IBM Plex Mono, monospace", fontSize: "11px", color: "#7d786f" }}>{tag}</span>
             ))}
           </div>
 
-          {/* Links */}
           {project.links && project.links.length > 0 && (
-            <div className="pd-fade flex flex-wrap gap-4">
+            <div className="pd-fade flex flex-wrap gap-3">
               {project.links.map((l) => (
                 <a
                   key={l.label}
                   href={l.url}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-2 text-xs tracking-widest font-bold uppercase px-4 py-2 rounded-sm border transition-all"
-                  style={{ fontFamily: "Space Grotesk, sans-serif", color: "#a4ffb9", borderColor: "rgba(164,255,185,0.3)" }}
-                  onMouseEnter={(e) => gsap.to(e.currentTarget, { borderColor: "rgba(164,255,185,0.9)", backgroundColor: "rgba(164,255,185,0.06)", duration: 0.2 })}
-                  onMouseLeave={(e) => gsap.to(e.currentTarget, { borderColor: "rgba(164,255,185,0.3)", backgroundColor: "transparent", duration: 0.2 })}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm transition-all"
+                  style={{ color: AMBER, border: `1px solid ${LINE}` }}
+                  onMouseEnter={(e) => (e.currentTarget.style.borderColor = "rgba(224,162,78,0.6)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.borderColor = "var(--color-outline-variant)")}
                 >
                   {l.label} <ArrowIcon />
                 </a>
@@ -209,7 +190,7 @@ export default function ProjectDetail({ slug }) {
 
         {/* ── Media ────────────────────────────────────────────────────── */}
         {media.length > 0 && (
-          <div className="pd-fade mb-14 rounded-sm border overflow-hidden" style={{ borderColor: "rgba(72,71,77,0.3)" }}>
+          <div className="pd-fade mb-14 rounded-lg overflow-hidden" style={{ border: `1px solid ${LINE}` }}>
             {media.length > 1 ? (
               <GalleryWithArrows screenshots={media} onSelect={setSelectedImage} height="420px" />
             ) : (
@@ -226,7 +207,6 @@ export default function ProjectDetail({ slug }) {
 
         {/* ── Sezioni ──────────────────────────────────────────────────── */}
         <div className="space-y-14">
-
           {d.intro && (
             <section className="pd-fade">
               <SectionLabel index={1}>{t("detail.overview")}</SectionLabel>
@@ -236,7 +216,7 @@ export default function ProjectDetail({ slug }) {
 
           {d.problem && (
             <section className="pd-fade">
-              <SectionLabel index={2} color="#00d2fd">{t("detail.problem")}</SectionLabel>
+              <SectionLabel index={2}>{t("detail.problem")}</SectionLabel>
               <Prose text={pick(d.problem, lang)} />
             </section>
           )}
@@ -248,82 +228,59 @@ export default function ProjectDetail({ slug }) {
             </section>
           )}
 
-          {/* Highlights */}
           {d.highlights && d.highlights.length > 0 && (
             <section className="pd-fade">
-              <SectionLabel index={4} color="#00d2fd">{t("detail.highlights")}</SectionLabel>
+              <SectionLabel index={4}>{t("detail.highlights")}</SectionLabel>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {d.highlights.map((h, i) => (
-                  <div
-                    key={i}
-                    className="p-5 rounded-sm border"
-                    style={{ backgroundColor: "#19191f", borderColor: "rgba(72,71,77,0.25)" }}
-                  >
-                    <h3 className="font-bold mb-2" style={{ fontFamily: "Space Grotesk, sans-serif", color: "#a4ffb9" }}>
-                      {pick(h.title, lang)}
-                    </h3>
-                    <p className="text-sm leading-relaxed" style={{ color: "#acaab1" }}>{pick(h.body, lang)}</p>
+                  <div key={i} className="p-5 rounded-lg" style={{ backgroundColor: SURFACE, border: `1px solid ${LINE}` }}>
+                    <h3 className="mb-2" style={{ fontFamily: "Fraunces, serif", fontWeight: 500, fontSize: "18px", color: INK }}>{pick(h.title, lang)}</h3>
+                    <p style={{ fontSize: "14px", lineHeight: 1.6, color: BODY }}>{pick(h.body, lang)}</p>
                   </div>
                 ))}
               </div>
             </section>
           )}
 
-          {/* Stack */}
           {d.stack && d.stack.length > 0 && (
             <section className="pd-fade">
               <SectionLabel index={5}>{t("detail.stack")}</SectionLabel>
-              <div className="rounded-sm border overflow-hidden" style={{ borderColor: "rgba(72,71,77,0.25)" }}>
+              <div className="rounded-lg overflow-hidden" style={{ border: `1px solid ${LINE}` }}>
                 {d.stack.map((row, i) => (
                   <div
                     key={row.tech}
-                    className="flex flex-col md:flex-row md:items-center gap-1 md:gap-6 px-5 py-3"
+                    className="flex flex-col md:flex-row md:items-center gap-1 md:gap-6 px-5 py-3.5"
                     style={{
-                      backgroundColor: i % 2 === 0 ? "#19191f" : "#15151b",
-                      borderTop: i === 0 ? "none" : "1px solid rgba(72,71,77,0.18)",
+                      backgroundColor: i % 2 === 0 ? SURFACE : "#161519",
+                      borderTop: i === 0 ? "none" : `1px solid ${LINE}`,
                     }}
                   >
-                    <span className="md:w-56 shrink-0 font-bold text-sm" style={{ fontFamily: "IBM Plex Mono, monospace", color: "#00d2fd" }}>
-                      {row.tech}
-                    </span>
-                    <span className="text-sm" style={{ color: "#acaab1" }}>{pick(row.why, lang)}</span>
+                    <span className="md:w-64 shrink-0" style={{ fontFamily: "IBM Plex Mono, monospace", fontSize: "13px", color: AMBER }}>{row.tech}</span>
+                    <span style={{ fontSize: "14px", color: BODY }}>{pick(row.why, lang)}</span>
                   </div>
                 ))}
               </div>
             </section>
           )}
 
-          {/* Metrics */}
           {d.metrics && d.metrics.length > 0 && (
             <section className="pd-fade">
-              <SectionLabel index={6} color="#00d2fd">{t("detail.numbers")}</SectionLabel>
+              <SectionLabel index={6}>{t("detail.numbers")}</SectionLabel>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {d.metrics.map((m, i) => (
-                  <div
-                    key={i}
-                    className="p-5 rounded-sm border text-center"
-                    style={{ backgroundColor: "#19191f", borderColor: "rgba(72,71,77,0.25)" }}
-                  >
-                    <div className="font-black mb-1" style={{ fontFamily: "Space Grotesk, sans-serif", color: "#a4ffb9", fontSize: "1.6rem", textShadow: "0 0 14px rgba(164,255,185,0.4)" }}>
-                      {m.value}
-                    </div>
-                    <div className="text-[11px] uppercase leading-snug" style={{ fontFamily: "IBM Plex Mono, monospace", color: "#76747b" }}>
-                      {pick(m.label, lang)}
-                    </div>
+                  <div key={i} className="p-5 rounded-lg" style={{ backgroundColor: SURFACE, border: `1px solid ${LINE}` }}>
+                    <div className="mb-1" style={{ fontFamily: "Fraunces, serif", fontWeight: 500, color: INK, fontSize: "32px", lineHeight: 1 }}>{m.value}</div>
+                    <div style={{ fontFamily: "IBM Plex Mono, monospace", fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.04em", color: MUTED, lineHeight: 1.4 }}>{pick(m.label, lang)}</div>
                   </div>
                 ))}
               </div>
             </section>
           )}
 
-          {/* Deep dive */}
           {d.deepDive && (
             <section className="pd-fade">
               <SectionLabel index={7}>{t("detail.nerdy")}</SectionLabel>
-              <div
-                className="p-6 rounded-sm border-l-2"
-                style={{ backgroundColor: "#131319", borderColor: "#a4ffb9" }}
-              >
+              <div className="p-6 rounded-lg" style={{ backgroundColor: SURFACE, borderLeft: `2px solid ${AMBER}` }}>
                 <Prose text={pick(d.deepDive, lang)} />
               </div>
             </section>
@@ -332,45 +289,38 @@ export default function ProjectDetail({ slug }) {
 
         {/* ── Next project ─────────────────────────────────────────────── */}
         {nextProject && nextProject.slug !== project.slug && (
-          <div className="pd-fade mt-16 pt-10 border-t" style={{ borderColor: "rgba(72,71,77,0.2)" }}>
-            <span className="text-xs uppercase block mb-2" style={{ fontFamily: "IBM Plex Mono, monospace", color: "#76747b" }}>
+          <div className="pd-fade mt-16 pt-10" style={{ borderTop: `1px solid ${LINE}` }}>
+            <span className="block mb-2" style={{ fontFamily: "IBM Plex Mono, monospace", fontSize: "12px", textTransform: "uppercase", letterSpacing: "0.08em", color: MUTED }}>
               {t("detail.next")}
             </span>
             <button
               onClick={() => navigate(`#/project/${nextProject.slug}`)}
-              className="inline-flex items-center gap-3 text-left"
+              className="group inline-flex items-center gap-3 text-left"
               style={{ background: "none", border: "none", cursor: "pointer" }}
-              onMouseEnter={(e) => gsap.to(e.currentTarget, { x: 4, duration: 0.2 })}
-              onMouseLeave={(e) => gsap.to(e.currentTarget, { x: 0, duration: 0.2 })}
             >
-              <span className="font-black tracking-tight" style={{ fontFamily: "Space Grotesk, sans-serif", color: "#f9f5fd", fontSize: "1.5rem" }}>
-                {nextProject.title}
-              </span>
-              <span style={{ color: "#a4ffb9" }}><ArrowIcon /></span>
+              <span style={{ fontFamily: "Fraunces, serif", fontWeight: 500, color: INK, fontSize: "26px" }}>{nextProject.title}</span>
+              <span style={{ color: AMBER }} className="inline-block transition-transform duration-300 group-hover:translate-x-1.5"><ArrowIcon /></span>
             </button>
           </div>
         )}
       </main>
 
       {/* ── Footer ───────────────────────────────────────────────────── */}
-      <footer className="w-full border-t" style={{ backgroundColor: "#0e0e13", borderColor: "rgba(164,255,185,0.05)" }}>
-        <div className="flex flex-col md:flex-row justify-between items-center px-8 py-8 gap-4 max-w-5xl mx-auto">
-          <span className="font-bold uppercase tracking-widest text-sm" style={{ fontFamily: "Space Grotesk, sans-serif", color: "#a4ffb9" }}>
-            MARCO DELLA VECCHIA
-          </span>
+      <footer style={{ borderTop: `1px solid ${LINE}` }}>
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 px-6 md:px-8 py-8 max-w-4xl mx-auto">
+          <span style={{ fontFamily: "Fraunces, serif", fontSize: "15px", color: INK }}>Marco della Vecchia</span>
           <button
             onClick={() => navigate("#projects")}
-            className="inline-flex items-center gap-2 text-[11px] tracking-widest uppercase"
-            style={{ fontFamily: "IBM Plex Mono, monospace", color: "rgba(255,255,255,0.4)", background: "none", border: "none", cursor: "pointer" }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "#00d2fd")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.4)")}
+            className="inline-flex items-center gap-2 transition-colors"
+            style={{ fontFamily: "IBM Plex Mono, monospace", fontSize: "12px", color: MUTED, background: "none", border: "none", cursor: "pointer" }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = AMBER)}
+            onMouseLeave={(e) => (e.currentTarget.style.color = MUTED)}
           >
             <BackArrow /> {t("detail.allProjects")}
           </button>
         </div>
       </footer>
 
-      {/* ── Lightbox ─────────────────────────────────────────────────── */}
       <Lightbox image={selectedImage} onClose={() => setSelectedImage(null)} />
     </div>
   );

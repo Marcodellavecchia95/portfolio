@@ -1,68 +1,60 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap");
+
 @import "tailwindcss";
 
-@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap");
-
 @theme {
-  --color-background: #0e0e13;
-  --color-surface: #0e0e13;
-  --color-surface-dim: #0e0e13;
-  --color-surface-container-lowest: #000000;
-  --color-surface-container-low: #131319;
-  --color-surface-container: #19191f;
-  --color-surface-container-high: #1f1f26;
-  --color-surface-container-highest: #25252d;
-  --color-surface-bright: #2c2b33;
-  --color-surface-variant: #25252d;
-  --color-surface-tint: #a4ffb9;
+  /* ── Surfaces — carbone caldo ─────────────────────────────── */
+  --color-background: #141316;
+  --color-surface: #141316;
+  --color-surface-dim: #100F12;
+  --color-surface-container-lowest: #0F0E11;
+  --color-surface-container-low: #1B1A1E;
+  --color-surface-container: #1B1A1E;
+  --color-surface-container-high: #211F24;
+  --color-surface-container-highest: #25232A;
+  --color-surface-bright: #2C2A30;
+  --color-surface-variant: #1B1A1E;
+  --color-surface-tint: #E0A24E;
 
-  --color-primary: #a4ffb9;
-  --color-primary-dim: #00ed7e;
-  --color-primary-container: #00fd87;
-  --color-primary-fixed: #00fd87;
-  --color-primary-fixed-dim: #00ed7e;
-  --color-on-primary: #006532;
-  --color-on-primary-container: #005b2c;
-  --color-on-primary-fixed: #004621;
-  --color-on-primary-fixed-variant: #006632;
-  --color-inverse-primary: #006e37;
+  /* ── Accent — ambra (unico) ──────────────────────────────── */
+  --color-primary: #E0A24E;
+  --color-primary-dim: #C98A38;
+  --color-primary-container: #E0A24E;
+  --color-primary-fixed: #E0A24E;
+  --color-on-primary: #2A1C08;
+  --color-on-primary-container: #2A1C08;
+  --color-inverse-primary: #C98A38;
 
-  --color-secondary: #00d2fd;
-  --color-secondary-dim: #00c3eb;
-  --color-secondary-container: #00677e;
-  --color-secondary-fixed: #79dfff;
-  --color-secondary-fixed-dim: #1cd5ff;
-  --color-on-secondary: #004352;
-  --color-on-secondary-container: #eefaff;
-  --color-on-secondary-fixed: #003a47;
-  --color-on-secondary-fixed-variant: #00586c;
+  /* ── Secondary — slate sobrio (status/varianti) ──────────── */
+  --color-secondary: #7FA0B8;
+  --color-secondary-dim: #6E8BA6;
+  --color-secondary-container: #2A3540;
+  --color-on-secondary: #0E171F;
+  --color-on-secondary-container: #DCE7EF;
 
-  --color-tertiary: #7ee6ff;
-  --color-tertiary-dim: #00cdee;
-  --color-tertiary-container: #00dcff;
-  --color-tertiary-fixed: #00dcff;
-  --color-tertiary-fixed-dim: #00cdee;
-  --color-on-tertiary: #005361;
-  --color-on-tertiary-container: #004956;
-  --color-on-tertiary-fixed: #00333d;
-  --color-on-tertiary-fixed-variant: #005361;
+  --color-tertiary: #A9C2B5;
+  --color-on-tertiary: #15211B;
 
-  --color-error: #ff716c;
-  --color-error-dim: #d7383b;
-  --color-error-container: #9f0519;
-  --color-on-error: #490006;
-  --color-on-error-container: #ffa8a3;
+  /* ── Error — corallo desaturato ──────────────────────────── */
+  --color-error: #C96A5A;
+  --color-error-dim: #B25749;
+  --color-error-container: #3A1E18;
+  --color-on-error: #2A0F0A;
+  --color-on-error-container: #F4C9C0;
 
-  --color-outline: #76747b;
-  --color-outline-variant: #48474d;
+  --color-outline: #8E8980;
+  --color-outline-variant: #2C2A2F;
 
-  --color-on-background: #f9f5fd;
-  --color-on-surface: #f9f5fd;
-  --color-on-surface-variant: #acaab1;
-  --color-inverse-surface: #fcf8ff;
-  --color-inverse-on-surface: #55545b;
+  --color-on-background: #ECE7DF;
+  --color-on-surface: #ECE7DF;
+  --color-on-surface-variant: #A39E95;
+  --color-inverse-surface: #ECE7DF;
+  --color-inverse-on-surface: #2C2A2F;
 
+  /* ── Type ────────────────────────────────────────────────── */
   --font-family-headline: "Space Grotesk", sans-serif;
-  --font-family-body: "IBM Plex Sans", sans-serif;
+  --font-family-serif: "Fraunces", serif;
+  --font-family-body: "Space Grotesk", sans-serif;
   --font-family-mono: "IBM Plex Mono", monospace;
 }
 
@@ -70,49 +62,46 @@ body {
   font-family: var(--font-family-body);
   background-color: var(--color-background);
   color: var(--color-on-background);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-.glow-border {
-  box-shadow: 0 0 10px rgba(164, 255, 185, 0.08);
-  transition: box-shadow 0.3s ease;
-}
-.glow-border:hover {
-  box-shadow: 0 0 24px rgba(164, 255, 185, 0.25);
-}
-
-.neon-text-primary {
-  text-shadow: 0 0 8px rgba(164, 255, 185, 0.6);
-}
-.neon-text-secondary {
-  text-shadow: 0 0 8px rgba(0, 210, 253, 0.6);
-}
-
-.scanline-overlay {
-  background: linear-gradient(
-      rgba(18, 16, 16, 0) 50%,
-      rgba(0, 0, 0, 0.18) 50%
-    ),
-    linear-gradient(
-      90deg,
-      rgba(255, 0, 0, 0.04),
-      rgba(0, 255, 0, 0.015),
-      rgba(0, 0, 255, 0.04)
-    );
-  background-size: 100% 2px, 3px 100%;
+/* Soft amber glow, statico (niente parallax/scanline) */
+.amber-glow {
+  background: radial-gradient(closest-side, rgba(224, 162, 78, 0.10), transparent 70%);
   pointer-events: none;
 }
 
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
+/* Hairline divider */
+.rule {
+  border-top: 1px solid var(--color-outline-variant);
 }
-.cursor-blink {
-  animation: blink 1s step-end infinite;
+
+/* Underline animata per link testuali */
+.link-anim {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.3s ease;
+}
+.link-anim:hover {
+  background-size: 100% 1px;
 }
 
 section {
-  scroll-margin-top: 80px;
+  scroll-margin-top: 84px;
 }
 
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Accessibilità: rispetta la riduzione del movimento */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
